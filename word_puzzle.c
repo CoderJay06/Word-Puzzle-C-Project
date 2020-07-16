@@ -38,7 +38,8 @@ void fillGridRandomCharacters(char grid[][GRID_SIZE]);
 // for checking allocated memory and printing puzzle to txt file(Jay Cruz)
 void checkMemory(char *word, int *direction);
 void sendToTextFile(char grid[][GRID_SIZE]);
-char askToRepeat(char userChoice);
+int askToRepeat(char userChoice, int wordPlay);
+char getRepeatChoice(char userChoice);
 
 int main() {
    // Marcus Long
@@ -51,7 +52,7 @@ int main() {
    int i = 0, j = 0, wordPlay = 0;
    int *direction = (int*) malloc(UB * sizeof(int)+1); // allocate memory for word direction (Jay Cruz)
    char *word = (char *) malloc(MAX_STRING_SIZE * sizeof(char)+1); // allocate memory for word input (Jay Cruz)
-   char userChoice;
+   char userChoice, repeatPuzzle;
    
    // check if memory was allocated
    checkMemory(word, direction);
@@ -94,17 +95,12 @@ int main() {
             break;
       }
       wordPlay++;
-      
+
       // repeat program if user chooses to
       if (wordPlay == NUMBER_OF_WORDS) {
-         if (askToRepeat(userChoice) == 'Y') {
-            wordPlay = 0;
-            continue;
-         }
-         else {
-            break;
-         }
+         wordPlay = askToRepeat(userChoice, wordPlay);
       }
+      
    } while (wordPlay < NUMBER_OF_WORDS);
 
    fillGridRandomCharacters(grid);
@@ -369,8 +365,19 @@ void printGrid(char grid[][GRID_SIZE], char gridTitle[]) {
    printf("\n--------------------------------------------------------------------------------------\n\n");
 } // end printGrid
 
-char askToRepeat(char userChoice) {
-   printf("\nDo you want to repeat? Y/N: ");
-   scanf(" %c", &userChoice); FLUSH;
-   return toupper(userChoice);
+int askToRepeat(char choice, int wordPlay) {
+
+   if (getRepeatChoice(choice) == 'Y') {
+      wordPlay = 0;
+   }
+   else {
+      wordPlay = NUMBER_OF_WORDS;
+   }
+   return wordPlay;
 } // end askToRepeat
+
+char getRepeatChoice(char choice) {
+   printf("\nDo you want to repeat? Y/N: ");
+   scanf("%c", &choice); FLUSH;
+   return toupper(choice);
+} // end getRepeatChoice
